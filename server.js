@@ -6,7 +6,15 @@ const app = express();
 app.use(express.json());
 
 //import routes
+const lessonRouter = require("./routes/lessonRouter");
+const coursRouter = require("./routes/coursRouter");
+const quizzRouter = require("./routes/quizzRouter");
+const preferenceRouter = require("./routes/preferenceRoute");
 const contenuRouter = require("./routes/contenuRoute");
+app.use("/api", lessonRouter);
+app.use("/api", coursRouter);
+app.use("/api", quizzRouter);
+app.use("/api", preferenceRouter);
 app.use("/api", contenuRouter);
 
 //use mongoose

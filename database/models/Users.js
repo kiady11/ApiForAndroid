@@ -1,11 +1,14 @@
 const { mongoose } = require('mongoose');
+const bcrypt = require('bcryptjs')
+const SALT_WORK_FACTOR = 10;
+
 
 const schema = new mongoose.Schema({
-    name: { 
+    firstname: { 
         type: String, 
         require: true 
     },
-    username: { 
+    lastname: { 
         type: String, 
         require: true 
     },
@@ -19,31 +22,49 @@ const schema = new mongoose.Schema({
     },
     age: { 
         type: String, 
-        require: true 
     },
     sexe: { 
-        type: String, 
-        require: true 
+        type: String
     },
     active: { 
         type: String, 
-        require: true 
+        default: true 
     },
     mailActiveURL: { 
-        type: String, 
-        require: true 
+        type: String
     },
     preference: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "preferences" 
     }
-});
+}, { timestamps: {} });
 
-schema.method("toJSON", function () { 
+
+schema.pre('save', async function save(next) {
+    if (!this.isModified('password')) return next()
+    try {
+        const salt = await bcrypt.genSalt(SALT_WORK_FACTOR)
+        this.password = await bcrypt.hash(this.password, salt);
+        return next();
+    } catch (err) {
+        return next(err)
+    }
+})
+
+schema.methods.comparePassword = function (candidatePassword, cb) {
+    bcrypt.compare(candidatePassword.toString(), this.password, function(err, isMatch) {
+        if (err) return cb(err);
+        cb(null, isMatch);
+    });
+};
+
+// override la method toJSON pour que _v, _id return un string ( pour le front end )
+schema.method("toJSON", function () {
     const { _v, _id, ...object } = this.toObject()
+    delete object.password;
     object.id = _id
+    
     return object
-});
-
+})
 const User = mongoose.model('users', schema);
 module.exports = User;

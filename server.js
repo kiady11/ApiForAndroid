@@ -11,11 +11,13 @@ const coursRouter = require("./routes/coursRouter");
 const quizzRouter = require("./routes/quizzRouter");
 const preferenceRouter = require("./routes/preferenceRoute");
 const contenuRouter = require("./routes/contenuRoute");
+const authRouter = require("./routes/authRoute");
 app.use("/api", lessonRouter);
 app.use("/api", coursRouter);
 app.use("/api", quizzRouter);
 app.use("/api", preferenceRouter);
 app.use("/api", contenuRouter);
+app.use("/api", authRouter); 
 
 //use mongoose
 const db = require("./database/index")

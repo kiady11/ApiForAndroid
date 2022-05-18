@@ -1,4 +1,4 @@
-const { mongoose } = require('mongoose');
+const { mongoose, mongo } = require('mongoose');
 
 const schema = new mongoose.Schema({
     title: {
@@ -18,6 +18,10 @@ const schema = new mongoose.Schema({
     quizz: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "quizzs"
+    },
+    cours: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"cours"
     }
 });
 

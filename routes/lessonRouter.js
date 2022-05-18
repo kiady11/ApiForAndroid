@@ -21,7 +21,7 @@ router.get('/lessons/cours/:id', async (req, res) => {
     const  cours_id  = req.params.id
     try {
         if (!cours_id) {
-            res.status(400).send({ message: "Restaurant ID is missing" })
+            res.status(400).send({ message: "Cours ID is missing" })
             return
         }
         Cours.findOne({ 'id': cours_id }, (errror, cour) => {

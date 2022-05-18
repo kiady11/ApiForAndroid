@@ -10,12 +10,12 @@ const schema = new mongoose.Schema({
         require: true
     },
     reponse: { 
-        type: string, 
+        type: String, 
         require: true 
     },
     suggestionReponse: [
         {
-            type: string,
+            type: String,
             require: true
         }
     ]

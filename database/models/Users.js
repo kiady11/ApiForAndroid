@@ -1,9 +1,11 @@
 const { mongoose } = require('mongoose');
 const bcrypt = require('bcryptjs')
 const SALT_WORK_FACTOR = 10;
+autoIncrement = require('mongoose-auto-increment');
 
 
 const schema = new mongoose.Schema({
+    id: { type: Number, unique: true, min: 1 },
     firstname: { 
         type: String, 
         require: true 
@@ -36,8 +38,20 @@ const schema = new mongoose.Schema({
     preference: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "preferences" 
+    },
+    histoires:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "livres"
     }
 }, { timestamps: {} });
+
+autoIncrement.initialize(mongoose.connection)
+schema.plugin(autoIncrement.plugin, {
+  model: 'users',
+  field: 'id',
+  startAt: 1,
+  incrementBy: 1
+});
 
 
 schema.pre('save', async function save(next) {
@@ -62,7 +76,7 @@ schema.methods.comparePassword = function (candidatePassword, cb) {
 schema.method("toJSON", function () {
     const { _v, _id, ...object } = this.toObject()
     delete object.password;
-    object.id = _id
+    object._id = this._id
     
     return object
 })

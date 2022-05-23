@@ -17,5 +17,5 @@ schema.method("toJSON", function () {
     return object
 });
 
-const Livre = mongoose.model("livres", schema);
-module.exports = Livre;
+const Livres = mongoose.model("livres", schema);
+module.exports = Livres;

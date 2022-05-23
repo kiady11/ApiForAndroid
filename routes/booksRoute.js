@@ -1,13 +1,13 @@
 const express = require('express');
 var bodyParser = require('body-parser').json();
 const router = express.Router();
-const Livre = require("../database/models/Livre");
+const Livres = require("../database/models/Livres");
 const User = require('../database/models/Users');
 const { default: mongoose } = require("mongoose")
 
 router.get('/livres', bodyParser, async (req, res) => {
     try {
-        Livre.find({}).exec((err, transaction) => {
+        Livres.find({}).exec((err, transaction) => {
             if (err) console.log(err)
             res.status(200).json(transaction)
        })
@@ -18,12 +18,20 @@ router.get('/livres', bodyParser, async (req, res) => {
     }
 });
 
-router.get('/livres/users/:id', bodyParser, async (req, res) => {
+router.get('/livres/users/:id', async (req, res) => {
+    const { id } = req.params
     try {
-        User.find({id: id}).populate('histoires').select("histoires").exec((err, transaction) => {
-            if (err) console.log(err)
-            res.status(200).json(transaction)
-       })
+        User.findOne({ _id: mongoose.mongo.ObjectId("6288e304d3525c88e2bc890d") })
+        .exec(function (err, user) {
+            if (err) {
+                res.status(500).json({ message: "Error on the server" })
+            } else if (!user) {
+                res.status(400).json({ message: "Email introuvable dans la base" })
+            } else {
+                res.status(200).json({ user: user })
+        
+            }
+        })
     } catch (err) {
         console.log(err)
         res.status(500).json(err)

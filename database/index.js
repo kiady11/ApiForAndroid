@@ -11,5 +11,6 @@ db.preferences = require("./models/Preference");
 db.quizzs = require("./models/Quizzs");
 db.cours = require("./models/Cours");
 db.lessons = require("./models/Lessons");
+db.livres = require("./models/Livres");
 
 module.exports = db;

@@ -2,36 +2,26 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>MY APP</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;400;700;900&display=swap" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+    <!-- style.css file path in the line below. -->
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- -------------------------------------- -->
+    <title>Multer Tutorial</title>
 </head>
 
 <body>
-
-
-    <!--  SINGLE FILE -->
-    <form action="/uploadfile" enctype="multipart/form-data" method="POST">
-        <input type="file" name="myFile" />
-        <input type="submit" value="Upload a file" />
-    </form>
-
-
-    <!-- MULTIPLE FILES -->
-
-    <form action="/uploadmultiple" enctype="multipart/form-data" method="POST">
-        Select images: <input type="file" name="myFiles" multiple>
-        <input type="submit" value="Upload your files" />
-    </form>
-
-    <!--   PHOTO-->
-
-    <form action="/upload/photo" enctype="multipart/form-data" method="POST">
-        <input type="file" name="myImage" accept="image/*" />
-        <input type="submit" value="Upload Photo" />
-    </form>
-
-
-
+    <main class="admin">
+        <div class="admin__upload-file">
+            <form action="#" enctype="multipart/form-data" method="post">
+                <input type="file" class="admin__input" id="myFile" name="myFile" />
+                <input class="admin__submit" type="submit" />
+            </form>
+        </div>
+    </main>
 </body>
 
 </html>

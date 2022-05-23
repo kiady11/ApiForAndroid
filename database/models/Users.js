@@ -40,7 +40,8 @@ const schema = new mongoose.Schema({
         ref: "preferences" 
     },
     histoires:{
-        type:mongoose.Schema.Types.ObjectId,
+
+        type: mongoose.Schema.Types.ObjectId,
         ref: "livres"
     }
 }, { timestamps: {} });
@@ -77,7 +78,6 @@ schema.method("toJSON", function () {
     const { _v, _id, ...object } = this.toObject()
     delete object.password;
     object._id = this._id
-    
     return object
 })
 const User = mongoose.model('users', schema);

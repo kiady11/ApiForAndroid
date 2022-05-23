@@ -50,8 +50,11 @@ router.post('/login', bodyParser, async (req, res) => {
             res.status(400).json({ message: "Veuillez remplir tous les formulaires" })
             return
         }
-        User.findOne({ email: new RegExp('^' + email + '$', "i") }).exec(function (err, user) {
+        User.findOne({ email: new RegExp('^' + email + '$', "i") })
+        .populate({ path: 'histoires', select: 'titre' })
+        .exec(function (err, user) {
             if (err) {
+                console.log(err)
                 res.status(500).json({ message: "Error on the server" })
             } else if (!user) {
                 res.status(400).json({ message: "Email introuvable dans la base" })
@@ -63,6 +66,7 @@ router.post('/login', bodyParser, async (req, res) => {
                         console.log("password", password)
                         res.status(400).json({ message: "Mot de passe incorrect" })
                     } else {
+                        console.log(user)
                         res.status(200).json({ message: "User connected", user: user })
                     }
                 })
@@ -75,6 +79,16 @@ router.post('/login', bodyParser, async (req, res) => {
     }
 })
 
-
+//get all my histories
+router.get('/user', async(req, res)=>{
+    try{
+        const user  = await User.findOne({id: 2})
+        console.log(user)
+        await user.populate("histoires").execPopulate()
+        res.status(200).json({ user: user })
+    }catch(err){
+        return res.status(500).json(err)
+    }
+})  
 
 module.exports = router;

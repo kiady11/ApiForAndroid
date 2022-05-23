@@ -1,7 +1,8 @@
 const { mongoose } = require('mongoose');
+autoIncrement = require('mongoose-auto-increment');
 
 const schema = new mongoose.Schema({
-    name: {
+    nom: {
         type: String,
         require: true
     },

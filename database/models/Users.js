@@ -28,6 +28,12 @@ const schema = new mongoose.Schema({
     sexe: { 
         type: String
     },
+    cours: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "cours"
+        }
+    ],
     active: { 
         type: String, 
         default: true 
@@ -39,11 +45,12 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "preferences" 
     },
-    histoires:{
-
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "livres"
-    }
+    histoires:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "livres"
+        }
+    ]
 }, { timestamps: {} });
 
 autoIncrement.initialize(mongoose.connection)

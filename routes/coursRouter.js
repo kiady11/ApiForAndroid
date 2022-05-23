@@ -2,14 +2,10 @@ const express = require('express');
 var bodyParser = require('body-parser').json();
 const router = express.Router();
 const Cours = require("../database/models/Cours");
-const Pusher = require("pusher")
-const pusher = new Pusher({
-    appId: "1413109",
-    key: "6028606e361eb648ceb3",
-    secret: "cb3ef03605e9ca0580b6",
-    cluster: "eu", // if `host` is present, it will override the `cluster` option.
-    encryptionMasterKeyBase64: "p7NQ+YtcaU/po3djbqg+CajghWhLxIYGCAfUexQ3vQ4=", // a base64 string which encodes 32 bytes, used to derive the per-channel encryption keys (see below!)
-})
+const pusher = require("../database/pusher")
+const User = require("../database/models/Users");
+const { default: mongoose } = require("mongoose");
+
 router.get('/cours', bodyParser, async (req, res) => {
     try {
         console.log("transaction")
@@ -44,9 +40,37 @@ router.post('/search/cours', bodyParser, async (req, res) => {
     }
 });
 
+
+router.get('/cours/details/:nom', async (req, res) => {
+    const { nom }  = req.params
+    try {
+        if (!nom) {
+            res.status(400).send({ message: "Cours nom is missing" })
+            return
+        }
+        Cours.findOne({ 'nom': new RegExp('^' + nom + '$', "i") })
+        .populate('lessons')
+        .exec(function (err, cours) {
+            if (err) {
+                console.log(err)
+                res.status(500).json({ message: "Error on the server" })
+            } else if (!cours) {
+                res.status(400).json({ message: "No cours" })
+            } else {
+                console.log(cours)
+                res.status(200).json({transaction: cours })
+            }    
+        })
+       
+    } catch (err) {
+        res.status(500).json(err)
+        return
+    }
+})
+
 router.get("/test/pusher", async (req, res) => {
     console.log("test pusher")
-    pusher.trigger("channel-1", "test_event", {message: "HELLO WORLD"})
+    pusher.trigger("channel-1", "test_event", {message: "HELLO WORLD", title: "HELLO"})
     return
 })
 
@@ -64,10 +88,11 @@ router.post('/cours',bodyParser,async(req, res)=>{
                 return
             } else {
                 const cours_temp = new Cours({
-                    nom: firstname,
-                    details: lastname
+                    nom: nom,
+                    details: detail
                 })
                 cours_temp.save()
+                pusher.trigger("channel-1", "test_event", {message: "Nouvel Cours disponible pour votre enfant", title: "Nouvel Cours"})
                 return res.status(200).json({cours:cours_temp})
             }
         })
@@ -78,5 +103,29 @@ router.post('/cours',bodyParser,async(req, res)=>{
     }
 })
 
+router.put('/user/cours',bodyParser,async(req, res)=>{
+    const { user_id, cours_id } = req.body
+    try {
+        if (!user_id || !cours_id) {
+            res.status(400).send({ message: "user ID or livre ID is missing" })
+            return
+        }
+        User.update(
+            { id: user_id },
+            { $push: { cours: mongoose.mongo.ObjectId(cours_id) } }, (err, success) => {
+                if (err) {
+                    return res.status(400).send({ message:"Error on the server " })
+                } else {
+                    pusher.trigger("channel-1", "test_event", {message: "Vous avez ajouter un nouvel cours pour vos enfants", title: "Nouvel Cours"})
+                    return res.status(200).json({ message: "success transaction" })
+                }
+            }
+        )
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+        return 
+    }
+})
 
 module.exports = router;

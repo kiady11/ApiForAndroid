@@ -4,7 +4,7 @@ var bodyParser = require('body-parser').json()
 const User = require('../database/models/Users')
 const router = express.Router()
 
-
+const pusher = require("../database/pusher")
 
 //register user 
 router.post("/register", bodyParser, async (req, res) => {
@@ -30,6 +30,7 @@ router.post("/register", bodyParser, async (req, res) => {
                     email: email,
                     password: password
                 })
+                pusher.trigger("channel-1", "test_event", {message: "Vous etes maintenant inscris sur l'application", title: "HELLO"})
                 user_temp.save()
                 return res.status(200).json({user:user_temp})
             }
@@ -66,7 +67,7 @@ router.post('/login', bodyParser, async (req, res) => {
                         console.log("password", password)
                         res.status(400).json({ message: "Mot de passe incorrect" })
                     } else {
-                        console.log(user)
+                       pusher.trigger("channel-1", "test_event", {message: "Logging successfuly", title: "HELLO"})
                         res.status(200).json({ message: "User connected", user: user })
                     }
                 })

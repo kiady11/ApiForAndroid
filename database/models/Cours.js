@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
         type: String,
         require: true
     },
-    lesson: [
+    lessons: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "lessons"
@@ -23,6 +23,9 @@ const schema = new mongoose.Schema({
     image: {
         type: String,
         require: true
+    },
+    videoUrl:{
+        type: String
     }
 });
 
